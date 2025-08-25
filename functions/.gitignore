@@ -11,6 +11,7 @@ node_modules/
 
 *.log
 
+.runtimeconfig.json
 .env-production
 .env.production
 .env-prod
