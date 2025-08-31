@@ -15,6 +15,9 @@ import { getAllInstructors } from "./http/Consultations/getAllInstructors.http";
 import { createClasses } from "./http/admin/createNewClasses.http";
 import { filterInstructors } from "./http/Consultations/filterInstructors.http";
 import { deleteUser } from "./http/admin/deleteUser.http";
+import { getAllClasses } from "./http/admin/getAllClasses.http";
+import { updateClasses } from "./http/admin/updateNewClasses.http";
+import { deleteClasses } from "./http/admin/deleteNewClasses.http";
 
 
 config.init();
@@ -49,12 +52,17 @@ app.get("/", (req: any, res: any) => {
 // Login
 app.post("/auth/login", (request: any, response: any) => authenticationJwt(request, response));
 
-// Admin
+// AdminUsers
 app.get("/admin/users", authMiddleware.checkToken, (request: any, response: any) => getAllUsers(request, response));
 app.post("/admin/users", authMiddleware.checkToken, (request: any, response: any) => createUser(request, response));
 app.put("/admin/users/:uid", authMiddleware.checkToken, (request: any, response: any) => updateUser(request, response));
-app.post("/admin/classes", authMiddleware.checkToken, (request: any, response: any) => createClasses(request, response));
 app.delete("/admin/users/:userId", authMiddleware.checkToken, (request: any, response: any) => deleteUser(request, response));
+
+//AdminClasses
+app.get("/admin/classes", authMiddleware.checkToken, (request: any, response: any) => getAllClasses(request, response));
+app.post("/admin/classes", authMiddleware.checkToken, (request: any, response: any) => createClasses(request, response));
+app.put("/admin/classes/:classId", authMiddleware.checkToken, (request: any, response: any) => updateClasses(request, response));
+app.delete("/admin/classes/:classId", authMiddleware.checkToken, (request: any, response: any) => deleteClasses(request, response));
 
 // Consultations
 app.get("/consultations/instructors", authMiddleware.checkToken, (request: any, response: any) => getAllInstructors(request, response));

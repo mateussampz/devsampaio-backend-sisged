@@ -4,15 +4,15 @@ import * as admin from "firebase-admin";
 
 const corsHandler: any = cors({origin: true});
 
-export const deleteUser: any = functions.runWith({timeoutSeconds: 540, memory: "8GB"}).https.onRequest(
+export const deleteClasses: any = functions.runWith({timeoutSeconds: 540, memory: "8GB"}).https.onRequest(
     (request: any, response: any) => {
       corsHandler(request, response, async () => {
-        const userId: string = request.params.userId;
-        const userRef: any = admin.firestore().collection("profiles").doc(userId);
+        const classId: string = request.params.classId;
+        const userRef: any = admin.firestore().collection("classes").doc(classId);
         const userSnapshot: any = await userRef.get();
 
         if (!userSnapshot.exists) {
-          return response.status(404).send({message: "User not found"});
+          return response.status(404).send({message: "classes not found"});
         }
 
         await userRef.delete();

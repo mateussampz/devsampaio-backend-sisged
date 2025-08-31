@@ -18,6 +18,7 @@ export const getAllInstructors = functions.runWith({timeoutSeconds: 540, memory:
 
         const instructors = snapshot.docs.map((doc: FirebaseFirestore.QueryDocumentSnapshot) => ({
           name: doc.data().name,
+          typeUser: doc.data().typeUser,
         }));
 
         return response.send({

@@ -2,6 +2,13 @@ import  cors from "cors";
 import * as admin from "firebase-admin";
 import * as joi from "joi";
 import * as functions from "firebase-functions/v1";
+import { Timestamp } from "firebase-admin/firestore";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const corsHandler = cors();
 
@@ -19,12 +26,8 @@ export const filterInstructors = functions.runWith({timeoutSeconds: 540, memory:
 
         const {instructor, startDate, endDate, shift} = body;
 
-        const startStateISO = `${startDate}T00:00:00.000Z`;
-        const startNewDate = new Date(startStateISO);
-
-        const endStateISO = `${endDate}T23:59:59.999Z`;
-        const endNewDate = new Date(endStateISO);
-
+        const utcStartDate = dayjs.tz(startDate, "America/Sao_Paulo").utc().toDate();
+        const utcEndDate = dayjs.tz(endDate, "America/Sao_Paulo").utc().toDate();
         const bodyValidation: any = bodySchema.validate(body);
 
         if (bodyValidation.error) {
@@ -34,8 +37,8 @@ export const filterInstructors = functions.runWith({timeoutSeconds: 540, memory:
         const snapshot = await admin.firestore()
             .collection("classes")
             .where("instructor", "==", instructor)
-            .where("date", ">=", startNewDate)
-            .where("date", "<=", endNewDate)
+            .where("date", ">=", Timestamp.fromMillis(utcStartDate.getTime()))
+            .where("date", "<=", Timestamp.fromMillis(utcEndDate.getTime()))
             .where("shift", "==", shift)
             .get();
 

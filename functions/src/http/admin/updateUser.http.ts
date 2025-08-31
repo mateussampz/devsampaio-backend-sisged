@@ -10,8 +10,6 @@ const bodySchema: joi.Schema = joi.object({
   displayName: joi.string().required(),
   name: joi.string().required(),
   email: joi.string().required(),
-  userClass: joi.string().required(),
-  shift: joi.string().required(),
 }).unknown(false);
 
 export const updateUser = functions.runWith({timeoutSeconds: 540, memory: "8GB"}).https.onRequest(
@@ -32,7 +30,7 @@ export const updateUser = functions.runWith({timeoutSeconds: 540, memory: "8GB"}
           return response.status(404).send({message: bodyValidation.error.details[0]});
         }
 
-        const {displayName, name,  email, userClass, shift}: any = body;
+        const {displayName, name,  email}: any = body;
 
         // Get user
         const userDoc: any = admin.firestore().collection("profiles").doc(uid);
@@ -47,8 +45,6 @@ export const updateUser = functions.runWith({timeoutSeconds: 540, memory: "8GB"}
           displayName,
           name,
           email,
-          userClass,
-          shift,
         });
 
         if (userData.email !== email) {
